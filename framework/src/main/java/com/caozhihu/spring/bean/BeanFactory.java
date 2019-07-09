@@ -33,7 +33,8 @@ public class BeanFactory {
      * 并且处理类中所有带 @AutoWired 注解的属性的依赖问题。
      */
     public static void initBean(List<Class<?>> classList) throws Exception {
-        // 因为类定义可能后续还要使用，因此创建新容器
+        // 因为类定义后续处理类中 @RequestMapping 注解生成处理器时还要使用，
+        // 因此这里要创建新容器，不能修改原引用
         List<Class<?>> classesToCreate = new ArrayList<>(classList);
         // 被 @Aspect 注解的切面类
         List<Class<?>> aspectClasses = new ArrayList<>();
