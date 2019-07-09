@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class HandlerManager {
 
-    // 类中各方法对应的 MappingHandler 的集合
+    // 类中各 @RequestMapping 注解修饰的方法对应的 MappingHandler 的集合
     public static List<MappingHandler> mappingHandlerList = new ArrayList<>();
 
     public static void resolveMappingHandler(List<Class<?>> classList) {
