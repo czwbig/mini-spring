@@ -20,15 +20,12 @@ public class RapAspect {
 
     @Before("rapPoint()")
     public void singAndDance() {
-        // 在 rap 之前要先唱、跳
-        System.out.println("first,singing <chicken is too beautiful>.");
-        System.out.println("and the chicken monster is dancing now.");
+        System.out.println(" before rap");
     }
 
     @After("rapPoint()")
     public void basketball() {
-        // 在 rap 之后别忘记了篮球
-        System.out.println("oh! Don't forget my favorite basketball.");
+        System.out.println("after rap");
     }
 
     /*// @Around 是环绕通知，简单起见，我们选择实现 @Before 和 @After

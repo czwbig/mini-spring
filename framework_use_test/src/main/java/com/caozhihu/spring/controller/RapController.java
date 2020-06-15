@@ -13,6 +13,6 @@ public class RapController {
     @RequestMapping("/rap")
     public String rap() {
         rapper.rap();
-        return "CXK";
+        return "raping...,view console";
     }
 }

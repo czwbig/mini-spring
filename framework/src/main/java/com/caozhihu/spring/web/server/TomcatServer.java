@@ -6,11 +6,6 @@ import org.apache.catalina.LifecycleException;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.startup.Tomcat;
 
-/**
- * @author:czwbig
- * @date:2019/7/6 15:08
- * @description: Tomcat服务器初始化，这里调用的 DispatcherServlet
- */
 public class TomcatServer {
     private Tomcat tomcat;
     private String[] args;

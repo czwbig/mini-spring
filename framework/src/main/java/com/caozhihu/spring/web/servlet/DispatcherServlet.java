@@ -3,15 +3,14 @@ package com.caozhihu.spring.web.servlet;
 import com.caozhihu.spring.web.handler.HandlerManager;
 import com.caozhihu.spring.web.handler.MappingHandler;
 
-import javax.servlet.*;
+import javax.servlet.Servlet;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
-/**
- * @author:czwbig
- * @date:2019/7/6 15:30
- * @description: 请求分发器，所有的请求都会在这里处理
- */
+
 public class DispatcherServlet implements Servlet {
 
     @Override
@@ -33,9 +32,7 @@ public class DispatcherServlet implements Servlet {
                 if (mappingHandler.handle(req, res)) {
                     return;
                 }
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
+            } catch (IllegalAccessException | InvocationTargetException e) {
                 e.printStackTrace();
             }
         }

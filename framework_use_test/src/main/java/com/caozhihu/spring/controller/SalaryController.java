@@ -6,11 +6,6 @@ import com.caozhihu.spring.web.mvc.Controller;
 import com.caozhihu.spring.web.mvc.RequestMapping;
 import com.caozhihu.spring.web.mvc.RequestParam;
 
-/**
- * @author:czwbig
- * @date:2019/7/6 16:48
- * @description:
- */
 @Controller
 public class SalaryController {
     @AutoWired

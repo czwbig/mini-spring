@@ -5,7 +5,8 @@ import com.caozhihu.spring.service.Rap;
 
 @Component
 public class Rapper implements Rap {
+    @Override
     public void rap() {
-        System.out.println("CXK rapping...");
+        System.out.println("rapping...");
     }
 }
