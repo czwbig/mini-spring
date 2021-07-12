@@ -7,17 +7,18 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 
 /**
  * @author czwbig
  * @since 2020/3/1
  */
 public class BeanFactory {
-    private static Map<Class<?>, Object> beans = new ConcurrentHashMap<>();
+    private static final Map<Class<?>, Object> beans = new ConcurrentHashMap<>();
     /**
      * 带有 @AutoWired 注解修饰的属性的类
      */
-    private static Set<Class<?>> beansHasAutoWiredField = Collections.synchronizedSet(new HashSet<>());
+    private static final Set<Class<?>> beansHasAutoWiredField = Collections.synchronizedSet(new HashSet<>());
 
     public static Object getBean(Class<?> cls) {
         return beans.get(cls);
@@ -50,6 +51,8 @@ public class BeanFactory {
         }
     }
 
+    static Function<String, String> takeToBrackets = (strWithBrackets) -> strWithBrackets.substring(0, strWithBrackets.indexOf("("));
+
     /**
      * 通过 Class 对象创建实例
      *
@@ -64,7 +67,7 @@ public class BeanFactory {
         // 初始化对象
         Object bean = aClass.newInstance();
         // 遍历类中所有定义的属性，如果属性带有 @AutoWired 注解，则需要注入对应依赖
-        for (Field field : bean.getClass().getDeclaredFields()) {
+        for (Field field : aClass.getDeclaredFields()) {
             if (!field.isAnnotationPresent(AutoWired.class)) {
                 continue;
             }
@@ -74,7 +77,7 @@ public class BeanFactory {
             field.setAccessible(true);
             if (fieldType.isInterface()) {
                 // 如果依赖的类型是接口，则查询其实现类,
-                // class1.isAssignableFrom(class2) = true 代表class2是class1类型，可分配class2对象给class
+                // class1.isAssignableFrom(class2) = true; class1 可以从 class2 赋值，代表class2是class1类型，可分配class2对象给class1
                 for (Class<?> key : BeanFactory.beans.keySet()) {
                     if (fieldType.isAssignableFrom(key)) {
                         fieldType = key;
@@ -94,42 +97,40 @@ public class BeanFactory {
      */
     private static void resolveAOP(List<Class<?>> aspectClasses)
             throws ClassNotFoundException, IllegalAccessException, InstantiationException {
-        if (aspectClasses.size() == 0) {
-            return;
-        }
-
         for (Class<?> aClass : aspectClasses) {
-            Method before = null;
-            Method after = null;
-            String method = null;
+            Method before = null; // 前置动作
+            Method after = null; // 后置动作
+            String method = null; // 切入方法
             Object target = null;
             String pointcutName = null;
 
             // 初始化对象，简单起见，这里先假定每一个代理类，
             // 并且最多只有一个切点，一个前置以及一个后置处理器，所以我们也必需先处理 pointcut，再解析before和after方法
             Object bean = aClass.newInstance();
-            for (Method m : bean.getClass().getDeclaredMethods()) {
+            Method[] methods = aClass.getDeclaredMethods();
+            for (Method m : methods) {
                 if (m.isAnnotationPresent(Pointcut.class)) {
                     // com.caozhihu.demo.Rapper.rap()
-                    String pointcut = m.getAnnotation(Pointcut.class).value();
-                    String classStr = pointcut.substring(0, pointcut.lastIndexOf("."));
+                    String pointcutValue = m.getAnnotation(Pointcut.class).value();
+                    // 截取全限定类名
+                    String classStr = pointcutValue.substring(0, pointcutValue.lastIndexOf("."));
                     target = Thread.currentThread().getContextClassLoader().loadClass(classStr).newInstance();
-                    method = pointcut.substring(pointcut.lastIndexOf(".") + 1);
+                    method = pointcutValue.substring(pointcutValue.lastIndexOf(".") + 1);
                     pointcutName = m.getName();
                 }
             }
+            // 如果没有切点名，则返回
+            if (pointcutName == null) continue;
 
             for (Method m : bean.getClass().getDeclaredMethods()) {
                 if (m.isAnnotationPresent(Before.class)) {
                     String value = m.getAnnotation(Before.class).value();
-                    value = value.substring(0, value.indexOf("("));
-                    if (value.equals(pointcutName)) {
+                    if (takeToBrackets.apply(value).equals(pointcutName)) {
                         before = m;
                     }
                 } else if (m.isAnnotationPresent(After.class)) {
                     String value = m.getAnnotation(After.class).value();
-                    value = value.substring(0, value.indexOf("("));
-                    if (value.equals(pointcutName)) {
+                    if (takeToBrackets.apply(value).equals(pointcutName)) {
                         after = m;
                     }
                 }
@@ -137,7 +138,7 @@ public class BeanFactory {
 
             // 获取代理对象并更新 bean 工厂
             Object proxy = new ProxyDyna().createProxy(bean, before, after,
-                    target, method.substring(0, method.indexOf("(")));
+                    target, takeToBrackets.apply(method));
             BeanFactory.beans.put(target.getClass(), proxy);
         }
     }

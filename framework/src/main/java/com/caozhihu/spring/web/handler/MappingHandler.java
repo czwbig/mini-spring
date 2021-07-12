@@ -31,19 +31,21 @@ public class MappingHandler {
     public boolean handle(ServletRequest req, ServletResponse res) throws
             IllegalAccessException, InvocationTargetException, IOException {
         String servletUri = ((HttpServletRequest) req).getRequestURI();
-        if (!uri.equals(servletUri)) {
+        if (!this.uri.equals(servletUri)) {
             return false;
         }
         // 如果本 MappingHandler 对应请求 uri 的 uri，
         // 先根据方法参数名，提取 request 中的参数值
-        Object[] parameters = new Object[args.length];
+        Object[] parameters = new Object[this.args.length];
         for (int i = 0; i < args.length; i++) {
-            parameters[i] = req.getParameter(args[i]);
+            parameters[i] = req.getParameter(this.args[i]);
         }
 
         // 获取对应 Controller 类实例以调用方法
-        Object ctroller = BeanFactory.getBean(controller);
-        Object response = method.invoke(ctroller, parameters);
+        Object controllerBean = BeanFactory.getBean(this.controller);
+        Object response = this.method.invoke(controllerBean, parameters);
+        // 只支持响应纯字符串
+        res.setCharacterEncoding("GBK");
         res.getWriter().println(response.toString());
 
         return true;

@@ -13,6 +13,6 @@ public class RapController {
     @RequestMapping("/rap")
     public String rap() {
         rapper.rap();
-        return "raping...,view console";
+        return "raping...,view console.请查看服务端控制台输出";
     }
 }

@@ -24,7 +24,9 @@ CXK rapping...
 oh! Don't forget my favorite basketball.
 ```  
   
-下面开始框架的讲解。
+下面开始框架的讲解。  
+
+**注意调式的时候也一定要运行 Jar 包，因为 Jar 包中才包含所有类，否则扫描类会出问题**   
 
 # 简介
 
@@ -422,9 +424,7 @@ oh! Don't forget my favorite basketball.
 
 # 总结与参考
 
-没啥好说的，该说的，都说了，你懂得，就够了，怎么有某一种悲哀....  哈哈哈哈
-
-![](https://upload-images.jianshu.io/upload_images/14923529-5206449ab6fc87b6.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+没啥好说的了
 
 ### 参考
 tomcat 使用与框架图：[手写一个简化版Tomcat](https://yq.aliyun.com/articles/630266?utm_content=m_1000014411)

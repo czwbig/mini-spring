@@ -33,6 +33,12 @@ public class ProxyDyna implements InvocationHandler {
         this.after = after;
         this.target = target;
         this.targetMethod = targetMethod;
+        /*
+         此方法接受3个参数
+         代理类所使用的类加载器
+         代理类需要实现的接口
+         InvocationHandler对象
+         */
         return Proxy.newProxyInstance(target.getClass().getClassLoader(),
                 target.getClass().getInterfaces(), this);
     }

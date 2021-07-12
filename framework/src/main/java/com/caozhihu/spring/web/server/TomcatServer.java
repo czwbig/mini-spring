@@ -8,14 +8,10 @@ import org.apache.catalina.startup.Tomcat;
 
 public class TomcatServer {
     private Tomcat tomcat;
-    private String[] args;
-
-    public TomcatServer(String[] args) {
-        this.args = args;
-    }
 
     public void startServer() throws LifecycleException {
         tomcat = new Tomcat();
+        tomcat.getConnector().setURIEncoding("UTF-8");
         tomcat.setPort(8080);
         tomcat.start();
 

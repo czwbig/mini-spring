@@ -11,6 +11,11 @@ public class SalaryController {
     @AutoWired
     private SalaryService salaryService;
 
+    @RequestMapping("/")
+    public String index() {
+        return "This is Index.这是首页";
+    }
+
     @RequestMapping("/getSalary")
     public Integer getSalary(@RequestParam("name") String name, @RequestParam("experience") String experience) {
         if (experience == null || experience.isEmpty()) {

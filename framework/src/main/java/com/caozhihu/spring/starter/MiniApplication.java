@@ -9,7 +9,7 @@ import java.util.List;
 
 public class MiniApplication {
     public static void run(Class<?> cls, String[] args) {
-        TomcatServer tomcatServer = new TomcatServer(args);
+        TomcatServer tomcatServer = new TomcatServer();
         try {
             // 启动 tomcat 服务
             tomcatServer.startServer();
